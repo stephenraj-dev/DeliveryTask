@@ -166,7 +166,7 @@ export class OrdersService {
     const orders = await this.orderModel.find({ riderId, status: { $in: ['assigned', 'picked_up'] } });
     if (orders.length === 0) return;
 
-    const reassignedOrdersList = [];
+    const reassignedOrdersList: { orderId: string; newRiderId: string }[] = [];
 
     for (const order of orders) {
       const riders = await this.userModel.find({ role: 'rider', status: 'available', _id: { $ne: new Types.ObjectId(riderId) } });
