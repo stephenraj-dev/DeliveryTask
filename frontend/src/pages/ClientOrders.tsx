@@ -126,70 +126,102 @@ export const ClientOrders: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+
         {/* Total Orders */}
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-              <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200/70">
+              <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Total Orders</p>
-              <p className="text-3xl font-extrabold text-gray-900 mt-1">{stats.total}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                Total Orders
+              </p>
+              <p className="text-3xl font-extrabold text-slate-800 mt-1">
+                {stats.total}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Waiting Pickup */}
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 border border-amber-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50">
-              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/60">
+              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Wait Pickup</p>
-              <p className="text-3xl font-extrabold text-amber-500 mt-1">{stats.waitingPickup}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-700">
+                Wait Pickup
+              </p>
+              <p className="text-3xl font-extrabold text-amber-600 mt-1">
+                {stats.waitingPickup}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Waiting Delivery */}
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-              <svg className="w-5 h-5 text-[#1936A1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/60">
+              <svg className="w-5 h-5 text-[#1936A1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+              </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Wait Delivery</p>
-              <p className="text-3xl font-extrabold text-[#1936A1] mt-1">{stats.waitingDelivery}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-blue-700">
+                Wait Delivery
+              </p>
+              <p className="text-3xl font-extrabold text-[#1936A1] mt-1">
+                {stats.waitingDelivery}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Delivered Orders */}
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50">
-              <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/60">
+              <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Delivered</p>
-              <p className="text-3xl font-extrabold text-emerald-500 mt-1">{stats.delivered}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700">
+                Delivered
+              </p>
+              <p className="text-3xl font-extrabold text-emerald-600 mt-1">
+                {stats.delivered}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Failed Orders */}
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-red-50 to-rose-100 border border-red-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-50">
-              <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/60">
+              <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Failed</p>
-              <p className="text-3xl font-extrabold text-red-500 mt-1">{stats.failed}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-red-700">
+                Failed
+              </p>
+              <p className="text-3xl font-extrabold text-red-600 mt-1">
+                {stats.failed}
+              </p>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* Create Order Form */}
