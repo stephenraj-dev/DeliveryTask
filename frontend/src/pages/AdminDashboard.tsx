@@ -176,6 +176,26 @@ export const AdminDashboard: React.FC = () => {
     ].filter(d => d.value > 0);
   }, [orders, selectedPieRiderId]);
 
+  const riderPerformanceList = React.useMemo(() => {
+    return riders.map(rider => {
+      const riderOrders = orders.filter(o => {
+        if (typeof o.riderId === 'object' && o.riderId !== null) return o.riderId._id === rider._id;
+        return o.riderId === rider._id;
+      });
+
+      const assigned = riderOrders.length;
+      const delivered = riderOrders.filter(o => o.status === 'delivered').length;
+      const percentage = assigned > 0 ? Math.round((delivered / assigned) * 100) : 0;
+
+      return {
+        ...rider,
+        assignedOrders: assigned,
+        deliveredOrders: delivered,
+        performancePercent: percentage
+      };
+    });
+  }, [riders, orders]);
+
   if (ordersLoading && orders.length === 0) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
   if (ordersError) return <Layout><div className="text-center py-20"><p className="text-red-500 text-lg">{ordersError}</p><Button onClick={fetchData} className="mt-4">Retry</Button></div></Layout>;
 
@@ -206,9 +226,51 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Orders Table */}
+        {/* Riders Overview */}
         <div className="lg:col-span-3">
-          <Card title="Orders" subtitle={`${orders.length} total orders`}>
+          <Card title="Riders Overview" className="mb-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="text-left text-gray-400 border-b border-gray-700 bg-gray-800/50">
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">ID</th>
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Name</th>
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Email</th>
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Performance</th>
+                </tr></thead>
+                <tbody>
+                  {riderPerformanceList.map(rider => (
+                    <tr key={rider._id} className="border-b border-gray-700 hover:bg-gray-700/50 transition-colors">
+                      <td className="py-4 px-4 font-mono text-xs text-gray-400">{rider._id.substring(0, 8)}...</td>
+                      <td className="py-4 px-4 font-medium text-gray-200">{rider.name}</td>
+                      <td className="py-4 px-4 text-gray-400 text-xs">{rider.email}</td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full ${rider.status === 'available' ? 'bg-emerald-500' : rider.status === 'busy' ? 'bg-amber-500' : 'bg-red-500'}`}></span>
+                          <span className="text-gray-300 text-xs capitalize">{rider.status === 'available' ? 'Active' : rider.status}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="w-full flex items-center gap-3">
+                          <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${rider.performancePercent}%` }}></div>
+                          </div>
+                          <span className="text-xs font-bold text-gray-300 w-10 text-right">{rider.performancePercent}%</span>
+                        </div>
+                        <p className="text-[10px] text-gray-500 mt-1">{rider.deliveredOrders} / {rider.assignedOrders} delivered</p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {riderPerformanceList.length === 0 && (
+                <div className="text-center py-6 text-gray-500">No riders found.</div>
+              )}
+            </div>
+          </Card>
+
+          {/* Orders Table */}
+          <Card title="Orders" subtitle={`${orders.length} total orders`} className="mb-6">
             {sortedOrders.length === 0 ? (
               <p className="text-gray-400 text-center py-10">No orders found.</p>
             ) : (

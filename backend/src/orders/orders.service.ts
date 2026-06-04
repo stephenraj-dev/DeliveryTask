@@ -21,9 +21,14 @@ export class OrdersService {
     const riders = await this.userModel.find({ role: 'rider', status: 'available' });
     if (riders.length === 0) throw new ServiceUnavailableException({ message: 'No riders available', retryAfter: 60 });
     
-    const assignedRider = data.priority === 'urgent' ? 
-      riders.sort((a, b) => (a.activeOrders||0) - (b.activeOrders||0))[0] : 
-      riders[0];
+    // Dynamically calculate active orders to prevent out-of-sync counter issues
+    const riderCounts = await Promise.all(riders.map(async (rider) => {
+      const activeCount = await this.orderModel.countDocuments({ riderId: rider._id, status: { $in: ['assigned', 'picked_up'] } });
+      return { rider, activeCount };
+    }));
+
+    riderCounts.sort((a, b) => a.activeCount - b.activeCount);
+    const assignedRider = riderCounts[0].rider;
 
     const order = new this.orderModel({ ...data, status: 'assigned', riderId: assignedRider._id, assignedAt: new Date() });
     await order.save();
@@ -127,14 +132,14 @@ export class OrdersService {
       if (data.proofPhoto) order.proofPhoto = data.proofPhoto;
       
       await this.userModel.findByIdAndUpdate(riderId, { $inc: { activeOrders: -1, totalDelivered: 1 } });
-      await this.redisClient.del('analytics:summary');
+      this.redisClient.del('analytics:summary').catch(() => {});
     }
 
     if (nextStatus === 'failed') {
       if (data.failureReason) order.failureReason = data.failureReason;
       await this.userModel.findByIdAndUpdate(riderId, { $inc: { activeOrders: -1, totalFailed: 1 } });
       this.notificationsService.notifyAdmin(`Order ${id} failed`);
-      await this.redisClient.del('analytics:summary');
+      this.redisClient.del('analytics:summary').catch(() => {});
     }
 
     await order.save();
