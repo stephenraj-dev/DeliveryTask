@@ -120,7 +120,7 @@ export const ClientOrders: React.FC = () => {
   return (
     <Layout>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
+        <h1 className="text-2xl font-bold text-slate-100">My Orders</h1>
         <Button variant="secondary" size="sm" onClick={fetchOrders} disabled={loading}>Refresh Orders</Button>
       </div>
 
@@ -128,7 +128,7 @@ export const ClientOrders: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
 
         {/* Total Orders */}
-        <div className="rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className="rounded-2xl bg-gradient-to-br from-slate-700/90 to-slate-800/90 border-slate-600 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <div className="flex flex-col gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200/70">
               <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,10 +136,10 @@ export const ClientOrders: React.FC = () => {
               </svg>
             </div>
             <div className="mt-2">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-300">
                 Total Orders
               </p>
-              <p className="text-3xl font-extrabold text-slate-800 mt-1">
+              <p className="text-3xl font-extrabold text-slate-100 mt-1">
                 {stats.total}
               </p>
             </div>
@@ -225,23 +225,26 @@ export const ClientOrders: React.FC = () => {
       </div>
 
       {/* Create Order Form */}
-      <Card title="Place New Order" className="mb-6">
+      <Card
+        title="Place New Order"
+        className="mb-6 bg-white/30 backdrop-blur-md border border-white/10"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Pickup Address</label>
-            <input className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={pickup} onChange={e => setPickup(e.target.value)} placeholder="Enter pickup address" />
+            <label className="block text-sm font-semibold text-black mb-2">Pickup Address</label>
+            <input className="w-full bg-slate-700/50 border-slate-600 text-slate-100 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={pickup} onChange={e => setPickup(e.target.value)} placeholder="Enter pickup address" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Drop Address</label>
-            <input className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={drop} onChange={e => setDrop(e.target.value)} placeholder="Enter drop address" />
+            <label className="block text-sm font-semibold text-black mb-2">Drop Address</label>
+            <input className="w-full bg-slate-700/50 border-slate-600 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={drop} onChange={e => setDrop(e.target.value)} placeholder="Enter drop address" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Package Details</label>
-            <input className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={pkg} onChange={e => setPkg(e.target.value)} placeholder="Describe the package" />
+            <label className="block text-sm font-semibold text-black mb-2">Package Details</label>
+            <input className="w-full bg-slate-700/50 border-slate-600 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm" value={pkg} onChange={e => setPkg(e.target.value)} placeholder="Describe the package" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Priority</label>
-            <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm appearance-none" value={priority} onChange={e => setPriority(e.target.value as 'normal' | 'urgent')}>
+            <label className="block text-sm font-semibold text-black mb-2">Priority</label>
+            <select className="w-full bg-slate-700/50 border-slate-600 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1936A1] focus:border-[#1936A1] outline-none transition-all duration-200 shadow-sm appearance-none" value={priority} onChange={e => setPriority(e.target.value as 'normal' | 'urgent')}>
               <option value="normal">Normal</option>
               <option value="urgent">Urgent</option>
             </select>
@@ -262,7 +265,7 @@ export const ClientOrders: React.FC = () => {
         ) : error ? (
           <div className="text-center py-10"><p className="text-red-500">{error}</p><Button onClick={fetchOrders} variant="secondary" className="mt-3">Retry</Button></div>
         ) : orders.length === 0 ? (
-          <p className="text-gray-400 text-center py-10">You haven't placed any orders yet.</p>
+          <p className="text-gray-300 text-center py-10">You haven't placed any orders yet.</p>
         ) : (
           <div className="space-y-3">
             {orders.map(order => (
@@ -271,13 +274,13 @@ export const ClientOrders: React.FC = () => {
                 onClick={() => setSelectedOrder(order)}
                 className={`p-5 rounded-xl border cursor-pointer transition-all duration-300 hover:shadow-md ${
                   order.priority === 'urgent'
-                    ? 'bg-red-50 border-red-100 hover:bg-red-100/50 hover:border-red-200'
-                    : 'bg-white border-gray-100 hover:bg-gray-50'
+                    ? 'bg-red-900/20 border-red-800 hover:bg-red-100/50 hover:border-red-200'
+                    : 'bg-slate-500/70 border-slate-700 hover:bg-slate-700/80'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base font-semibold text-gray-900">{order.pickupAddress} <span className="text-gray-400 mx-2">→</span> {order.dropAddress}</p>
+                    <p className="text-base font-semibold text-gray-900">{order.pickupAddress} <span className="text-gray-300 mx-2">→</span> {order.dropAddress}</p>
                     <p className="text-sm text-gray-500 mt-1">{order.packageDetails}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -288,7 +291,7 @@ export const ClientOrders: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                  <p className="text-xs font-semibold text-gray-400">{new Date(order.createdAt).toLocaleString()}</p>
+                  <p className="text-xs font-semibold text-gray-300">{new Date(order.createdAt).toLocaleString()}</p>
                   {order.riderId && <p className="text-xs font-semibold text-[#1936A1]">Rider assigned</p>}
                 </div>
               </div>
@@ -343,12 +346,12 @@ export const ClientOrders: React.FC = () => {
                       {/* Content */}
                       <div className="flex-1 -mt-0.5">
                         <span className={`text-sm capitalize ${
-                          done ? 'text-gray-900 font-medium' : 'text-gray-400'
+                          done ? 'text-gray-900 font-medium' : 'text-gray-300'
                         }`}>
                           {step.replace('_', ' ')}
                         </span>
                         {timestamp && (
-                          <p className="text-xs text-gray-400 mt-0.5">{formatDateTime(timestamp)}</p>
+                          <p className="text-xs text-gray-300 mt-0.5">{formatDateTime(timestamp)}</p>
                         )}
                         {done && step === 'assigned' && getRiderName(selectedOrder) && (
                           <p className="text-xs text-indigo-500 mt-0.5">Assigned to {getRiderName(selectedOrder)}</p>

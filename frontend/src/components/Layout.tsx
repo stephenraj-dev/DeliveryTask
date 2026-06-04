@@ -19,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-400 via-slate-300 to-slate-400 selection:bg-[#1936A1] selection:text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-500 via-slate-400 to-slate-500 selection:bg-[#1936A1] selection:text-white">
 
       <nav className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
 
