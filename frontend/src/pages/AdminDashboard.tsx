@@ -111,28 +111,56 @@ export const AdminDashboard: React.FC = () => {
       ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
-  if (ordersLoading) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600" /></div></Layout>;
+  const dynamicZoneData = React.useMemo(() => {
+    if (!orders || orders.length === 0) return [];
+    const zoneMap: Record<string, number> = {};
+    orders.forEach(order => {
+      // Basic dynamic zone extraction from pickup address
+      let zone = 'Central Area';
+      const addr = order.pickupAddress.toLowerCase();
+      if (addr.includes('north')) zone = 'North Zone';
+      else if (addr.includes('south')) zone = 'South Zone';
+      else if (addr.includes('east')) zone = 'East Zone';
+      else if (addr.includes('west')) zone = 'West Zone';
+      else {
+        const parts = order.pickupAddress.split(',');
+        if (parts.length > 1) {
+          zone = parts[parts.length - 1].trim();
+        } else {
+          const words = order.pickupAddress.split(' ');
+          zone = words.length > 0 ? words[0] + ' Area' : 'Central Area';
+        }
+      }
+      
+      // Capitalize first letter
+      zone = zone.charAt(0).toUpperCase() + zone.slice(1);
+      zoneMap[zone] = (zoneMap[zone] || 0) + 1;
+    });
+    return Object.entries(zoneMap).map(([zone, totalOrders]) => ({ zone, totalOrders }));
+  }, [orders]);
+
+  if (ordersLoading) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
   if (ordersError) return <Layout><div className="text-center py-20"><p className="text-red-500 text-lg">{ordersError}</p><Button onClick={fetchData} className="mt-4">Retry</Button></div></Layout>;
 
   return (
     <Layout>
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-sm text-gray-500">Total Orders</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">{analytics?.totalOrders ?? 0}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Orders</p>
+          <p className="text-4xl font-extrabold text-gray-900 mt-2">{analytics?.totalOrders ?? orders.length}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-sm text-gray-500">Delivered</p>
-          <p className="text-3xl font-bold text-emerald-600 mt-1">{analytics?.delivered ?? 0}</p>
+        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Delivered</p>
+          <p className="text-4xl font-extrabold text-emerald-600 mt-2">{analytics?.delivered ?? orders.filter(o => o.status === 'delivered').length}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-sm text-gray-500">Success Rate</p>
-          <p className="text-3xl font-bold text-indigo-600 mt-1">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : '0%'}</p>
+        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Success Rate</p>
+          <p className="text-4xl font-extrabold text-[#1936A1] mt-2">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : `${Math.round((orders.filter(o => o.status === 'delivered').length / (orders.length || 1)) * 100)}%`}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-          <p className="text-sm text-gray-500">Pending</p>
-          <p className="text-3xl font-bold text-amber-600 mt-1">{analytics?.pending ?? 0}</p>
+        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Pending</p>
+          <p className="text-4xl font-extrabold text-amber-500 mt-2">{analytics?.pending ?? orders.filter(o => o.status === 'pending').length}</p>
         </div>
       </div>
 
@@ -145,21 +173,21 @@ export const AdminDashboard: React.FC = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead><tr className="text-left text-gray-500 border-b">
-                    <th className="pb-3 font-medium">Order ID</th>
-                    <th className="pb-3 font-medium">Priority</th>
-                    <th className="pb-3 font-medium">Rider</th>
-                    <th className="pb-3 font-medium">Status</th>
-                    <th className="pb-3 font-medium">Created</th>
+                  <thead><tr className="text-left text-gray-500 border-b border-gray-100 bg-gray-50/50">
+                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Order ID</th>
+                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Priority</th>
+                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Rider</th>
+                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
+                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Created</th>
                   </tr></thead>
                   <tbody>
                     {sortedOrders.map(order => (
-                      <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b hover:bg-gray-50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
-                        <td className="py-3 font-mono text-xs">{order._id.substring(0, 10)}...</td>
-                        <td className="py-3"><Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge></td>
-                        <td className="py-3">{getRiderName(order.riderId)}</td>
-                        <td className="py-3">{getStatusBadge(order.status)}</td>
-                        <td className="py-3 text-gray-500">{new Date(order.createdAt).toLocaleString()}</td>
+                      <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
+                        <td className="py-4 px-4 font-mono text-xs text-gray-600">{order._id.substring(0, 10)}...</td>
+                        <td className="py-4 px-4"><Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge></td>
+                        <td className="py-4 px-4 font-medium text-gray-700">{getRiderName(order.riderId)}</td>
+                        <td className="py-4 px-4">{getStatusBadge(order.status)}</td>
+                        <td className="py-4 px-4 text-gray-500 text-xs font-medium">{new Date(order.createdAt).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -169,16 +197,16 @@ export const AdminDashboard: React.FC = () => {
           </Card>
 
           {/* Analytics */}
-          {analytics && analytics.zoneWiseSummary && analytics.zoneWiseSummary.length > 0 && (
-            <Card title="Zone-wise Order Volume" className="mt-6">
+          {dynamicZoneData.length > 0 && (
+            <Card title="Zone-wise Order Volume (Live)" className="mt-6">
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics.zoneWiseSummary}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="zone" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="totalOrders" fill="#6366f1" radius={[4,4,0,0]} />
+                  <BarChart data={dynamicZoneData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                    <XAxis dataKey="zone" axisLine={false} tickLine={false} tick={{fill: '#6B7280', fontSize: 12}} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#6B7280', fontSize: 12}} />
+                    <Tooltip cursor={{fill: '#F3F4F6'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                    <Bar dataKey="totalOrders" fill="#1936A1" radius={[4,4,0,0]} barSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

@@ -32,57 +32,159 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
+    <div className="min-h-screen bg-[#F4F6F9] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#1936A1] selection:text-white relative overflow-hidden">
+      {/* Background decorations matching the image (very subtle gradient/noise in background) */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 15% 15%, #E1E8F2 0%, transparent 40%), radial-gradient(circle at 85% 85%, #E1E8F2 0%, transparent 40%)' }}></div>
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+        <div className="flex justify-center">
+          <div className="w-16 h-16 bg-[#1936A1] rounded-2xl flex items-center justify-center shadow-lg shadow-[#1936A1]/20">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">DeliverX</h1>
-          <p className="text-gray-500 mt-1">Mini Logistics Platform</p>
         </div>
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">{isRegister ? 'Create Account' : 'Sign In'}</h2>
-          {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
-          {isRegister && (
-            <>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
-                <input className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" value={name} onChange={e => setName(e.target.value)} required />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
-                <select className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white" value={role} onChange={e => setRole(e.target.value as 'admin' | 'client' | 'rider')}>
-                  <option value="client">Client</option>
-                  <option value="rider">Rider</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-            </>
-          )}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-            <input type="email" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" value={email} onChange={e => setEmail(e.target.value)} required />
-          </div>
+        <h2 className="mt-4 text-center text-3xl font-bold tracking-tight text-[#1936A1]">
+          Euro Delivery Pro
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Precision Management for Global Operations
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[420px] relative z-10">
+        <div className="bg-white py-8 px-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl border border-gray-100">
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <input type="password" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" value={password} onChange={e => setPassword(e.target.value)} required />
+            <h3 className="text-xl font-bold text-gray-900">{isRegister ? 'Create Account' : 'Welcome back'}</h3>
+            <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+              {isRegister ? 'Please fill in the details to create your account.' : 'Please enter your credentials to access the dashboard.'}
+            </p>
           </div>
-          {!isRegister && (
-            <div className="mb-6 flex justify-between gap-2">
-              <button type="button" onClick={() => { setEmail('admin@test.com'); setPassword('password'); }} className="flex-1 py-2 px-2 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-medium hover:bg-indigo-50 transition">Auto Admin</button>
-              <button type="button" onClick={() => { setEmail('client@test.com'); setPassword('password'); }} className="flex-1 py-2 px-2 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-medium hover:bg-indigo-50 transition">Auto Client</button>
-              <button type="button" onClick={() => { setEmail('rider@test.com'); setPassword('password'); }} className="flex-1 py-2 px-2 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-medium hover:bg-indigo-50 transition">Auto Rider</button>
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-50 border border-red-100 rounded-lg p-3 flex items-start animate-[fadeIn_0.2s_ease-in-out]">
+                <div className="flex-shrink-0"><svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg></div>
+                <div className="ml-2.5"><p className="text-sm font-medium text-red-800">{error}</p></div>
+              </div>
+            )}
+
+            {isRegister && (
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 tracking-wide">Full Name</label>
+                <div className="mt-1.5 relative rounded-lg shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg focus:ring-[#1936A1] focus:border-[#1936A1] sm:text-sm transition-colors text-gray-900 placeholder-gray-400"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 tracking-wide">
+                Email Address
+              </label>
+              <div className="mt-1.5 relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </div>
+                <input
+                  type="email"
+                  required
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg focus:ring-[#1936A1] focus:border-[#1936A1] sm:text-sm transition-colors text-gray-900 placeholder-gray-400"
+                  placeholder="name@logistics-pro.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
-          )}
-          <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">{isRegister ? 'Create Account' : 'Sign In'}</Button>
-          <p className="text-center text-sm text-gray-500 mt-4">
-            {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button type="button" onClick={() => { setIsRegister(!isRegister); dispatch(clearAuthError()); }} className="text-indigo-600 font-medium hover:text-indigo-700">
-              {isRegister ? 'Sign In' : 'Register'}
-            </button>
-          </p>
-        </form>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-gray-700 tracking-wide">
+                  Password
+                </label>
+                {!isRegister && (
+                  <a href="#" className="text-xs font-semibold text-[#1936A1] hover:text-[#132A80]">
+                    Forgot Password?
+                  </a>
+                )}
+              </div>
+              <div className="mt-1.5 relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </div>
+                <input
+                  type="password"
+                  required
+                  className="block w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg focus:ring-[#1936A1] focus:border-[#1936A1] sm:text-sm transition-colors text-gray-900 placeholder-gray-400 font-mono"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center cursor-pointer">
+                  <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 tracking-wide mb-1.5">
+                {isRegister ? 'Register as' : 'Login as'}
+              </label>
+              <div className="flex rounded-lg border border-gray-200 bg-gray-50/50 p-1">
+                {(['admin', 'client', 'rider'] as ('admin'|'client'|'rider')[]).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setRole(r)}
+                    className={`flex-1 flex justify-center py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      role === r
+                        ? 'bg-[#1936A1] text-white shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50'
+                    }`}
+                  >
+                    {r.charAt(0).toUpperCase() + r.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button type="submit" variant="primary" className="w-full py-2.5 text-base rounded-lg" loading={loading}>
+                <span className="flex items-center justify-center gap-2">
+                  {isRegister ? 'Sign Up' : 'Login'} <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </span>
+              </Button>
+            </div>
+            
+            <div className="mt-6 border-t border-gray-100 pt-6">
+              <p className="text-center text-sm text-gray-600">
+                {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+                <button type="button" onClick={() => setIsRegister(!isRegister)} className="font-bold text-[#1936A1] hover:text-[#132A80]">
+                  {isRegister ? 'Login' : 'Sign Up'}
+                </button>
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <div className="mt-8 flex justify-center items-center gap-6 text-xs text-gray-400 font-medium">
+          <div className="flex items-center gap-1.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            Secure Login
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            SSL Encrypted
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -153,22 +153,22 @@ export const RiderDeliveries: React.FC = () => {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col justify-center">
-            <p className="text-xs font-medium text-gray-500 uppercase">Total Orders</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Total Orders</p>
+            <p className="text-3xl font-extrabold text-gray-900 mt-1">{stats.total}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col justify-center">
-            <p className="text-xs font-medium text-gray-500 uppercase">Total Delivered</p>
-            <p className="text-2xl font-bold text-emerald-600 mt-1">{stats.delivered}</p>
+          <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Total Delivered</p>
+            <p className="text-3xl font-extrabold text-emerald-600 mt-1">{stats.delivered}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col justify-center">
-            <p className="text-xs font-medium text-gray-500 uppercase">Total Failed</p>
-            <p className="text-2xl font-bold text-red-600 mt-1">{stats.failed}</p>
+          <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Total Failed</p>
+            <p className="text-3xl font-extrabold text-red-500 mt-1">{stats.failed}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col justify-center">
-            <p className="text-xs font-medium text-gray-500 uppercase">Performance</p>
-            <p className="text-2xl font-bold text-indigo-600 mt-1">{stats.performance}%</p>
+          <div className="bg-white rounded-xl card-shadow border border-gray-100 p-5 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Performance</p>
+            <p className="text-3xl font-extrabold text-[#1936A1] mt-1">{stats.performance}%</p>
           </div>
         </div>
       )}
@@ -183,24 +183,29 @@ export const RiderDeliveries: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {orders.map(order => (
-              <div key={order._id} className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{order.pickupAddress} → {order.dropAddress}</p>
-                    <p className="text-xs text-gray-500 mt-1">{order.packageDetails}</p>
-                    {order.handoverNote && <p className="text-xs text-amber-600 mt-1 font-medium">{order.handoverNote}</p>}
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge>
+              <div key={order._id} className={`p-6 rounded-xl border transition-all duration-300 hover:shadow-md ${
+                  order.priority === 'urgent'
+                    ? 'bg-red-50 border-red-100'
+                    : 'bg-white border-gray-100'
+                }`}>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <p className="text-base font-semibold text-gray-900">{order.pickupAddress} <span className="text-gray-400 mx-2">→</span> {order.dropAddress}</p>
+                    <p className="text-sm text-gray-500 mt-1.5">{order.packageDetails}</p>
+                    {order.handoverNote && <p className="text-sm text-amber-700 mt-2 font-medium bg-amber-50 p-2 rounded-lg inline-block border border-amber-100">{order.handoverNote}</p>}
+                    <div className="flex items-center gap-2 mt-3">
+                      {order.priority === 'urgent' && <Badge variant="danger">Urgent</Badge>}
                       {getStatusBadge(order.status)}
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-col items-end gap-2 w-full sm:w-auto">
                     {getNextStatuses(order.status).length > 0 && (
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 w-full sm:w-auto">
                         {getNextStatuses(order.status).map(nextStatus => (
                           <Button
                             key={nextStatus}
                             size="sm"
+                            className="flex-1 sm:flex-none"
                             variant={nextStatus === 'failed' ? 'danger' : nextStatus === 'delivered' ? 'success' : 'primary'}
                             loading={updatingId === order._id}
                             onClick={() => handleStatusChange(order._id, nextStatus)}
@@ -212,7 +217,9 @@ export const RiderDeliveries: React.FC = () => {
                     )}
                   </div>
                 </div>
-                <p className="text-xs text-gray-400 mt-3">{new Date(order.createdAt).toLocaleString()}</p>
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-xs font-semibold text-gray-400">Assigned: {new Date(order.createdAt).toLocaleString()}</p>
+                </div>
               </div>
             ))}
           </div>

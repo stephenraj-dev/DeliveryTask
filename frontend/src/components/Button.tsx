@@ -21,18 +21,18 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   className = '',
 }) => {
-  const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   const variants: Record<string, string> = {
-    primary: 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500',
-    ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-300',
+    primary: 'bg-[#1936A1] text-white hover:bg-[#132A80] focus:ring-[#1936A1]',
+    secondary: 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-200',
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-600',
+    success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600',
+    ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-200',
   };
   const sizes: Record<string, string> = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3.5 text-base',
   };
 
   return (
