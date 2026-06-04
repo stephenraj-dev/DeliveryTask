@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
     const action = isRegister
       ? dispatch(registerUser({ name, email, password, role }))
-      : dispatch(loginUser({ email, password }));
+      : dispatch(loginUser({ email, password, role }));
     const result = await action;
     if (result.meta.requestStatus === 'fulfilled') {
       const data = result.payload as { user: { role: string } };

@@ -11,7 +11,7 @@ import { fetchAllRiders, updateRiderStatus } from '../store/ridersSlice';
 import { fetchAnalyticsSummary } from '../store/analyticsSlice';
 import type { OrderData } from '../services/orders.service';
 import type { RiderData } from '../services/riders.service';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { socket } from '../services/socket';
 
 export const AdminDashboard: React.FC = () => {
@@ -19,9 +19,13 @@ export const AdminDashboard: React.FC = () => {
   const { items: orders, loading: ordersLoading, error: ordersError } = useAppSelector(state => state.orders);
   const { items: riders } = useAppSelector(state => state.riders);
   const { summary: analytics } = useAppSelector(state => state.analytics);
+  console.log("admin :", analytics);
+  console.log("admin order :", orders);
 
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [confirmRider, setConfirmRider] = useState<RiderData | null>(null);
+  const [selectedPieRiderId, setSelectedPieRiderId] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchData = () => {
     dispatch(fetchAllOrders(undefined));
@@ -44,11 +48,21 @@ export const AdminDashboard: React.FC = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    if (riders.length > 0 && !selectedPieRiderId) {
+      setSelectedPieRiderId(riders[0]._id);
+    }
+  }, [riders, selectedPieRiderId]);
+
   const sortedOrders = [...orders].sort((a, b) => {
     if (a.priority === 'urgent' && b.priority !== 'urgent') return -1;
     if (a.priority !== 'urgent' && b.priority === 'urgent') return 1;
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
+  const paginatedOrders = sortedOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'default'> = {
@@ -139,6 +153,29 @@ export const AdminDashboard: React.FC = () => {
     return Object.entries(zoneMap).map(([zone, totalOrders]) => ({ zone, totalOrders }));
   }, [orders]);
 
+  const pieChartData = React.useMemo(() => {
+    if (!selectedPieRiderId) return [];
+    const riderOrders = orders.filter(o => {
+      if (typeof o.riderId === 'object' && o.riderId !== null) return o.riderId._id === selectedPieRiderId;
+      return o.riderId === selectedPieRiderId;
+    });
+
+    const stats = { assigned: 0, picked_up: 0, delivered: 0, failed: 0 };
+    riderOrders.forEach(o => {
+      if (o.status === 'assigned') stats.assigned++;
+      if (o.status === 'picked_up') stats.picked_up++;
+      if (o.status === 'delivered') stats.delivered++;
+      if (o.status === 'failed') stats.failed++;
+    });
+
+    return [
+      { name: 'Assigned', value: stats.assigned, color: '#3B82F6' },
+      { name: 'Picked Up', value: stats.picked_up, color: '#F59E0B' },
+      { name: 'Delivered', value: stats.delivered, color: '#10B981' },
+      { name: 'Failed', value: stats.failed, color: '#EF4444' },
+    ].filter(d => d.value > 0);
+  }, [orders, selectedPieRiderId]);
+
   if (ordersLoading && orders.length === 0) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
   if (ordersError) return <Layout><div className="text-center py-20"><p className="text-red-500 text-lg">{ordersError}</p><Button onClick={fetchData} className="mt-4">Retry</Button></div></Layout>;
 
@@ -164,7 +201,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Pending</p>
-          <p className="text-4xl font-extrabold text-amber-400 mt-2 relative z-10">{analytics?.pending ?? orders.filter(o => o.status === 'pending').length}</p>
+          <p className="text-4xl font-extrabold text-amber-400 mt-2 relative z-10">{analytics?.pending ?? orders.filter(o => o.status === 'assigned').length}</p>
         </div>
       </div>
 
@@ -175,28 +212,51 @@ export const AdminDashboard: React.FC = () => {
             {sortedOrders.length === 0 ? (
               <p className="text-gray-400 text-center py-10">No orders found.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead><tr className="text-left text-gray-400 border-b border-gray-700 bg-gray-800/50">
-                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Order ID</th>
-                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Priority</th>
-                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Rider</th>
-                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
-                    <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Created</th>
-                  </tr></thead>
-                  <tbody>
-                    {sortedOrders.map(order => (
-                      <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b border-gray-700 hover:bg-gray-700/50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
-                        <td className="py-4 px-4 font-mono text-xs text-gray-400">{order._id.substring(0, 10)}...</td>
-                        <td className="py-4 px-4"><Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge></td>
-                        <td className="py-4 px-4 font-medium text-gray-200">{getRiderName(order.riderId)}</td>
-                        <td className="py-4 px-4">{getStatusBadge(order.status)}</td>
-                        <td className="py-4 px-4 text-gray-400 text-xs font-medium">{new Date(order.createdAt).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead><tr className="text-left text-gray-400 border-b border-gray-700 bg-gray-800/50">
+                      <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Order ID</th>
+                      <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Priority</th>
+                      <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Rider</th>
+                      <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
+                      <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Created</th>
+                    </tr></thead>
+                    <tbody>
+                      {paginatedOrders.map(order => (
+                        <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b border-gray-700 hover:bg-gray-700/50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
+                          <td className="py-4 px-4 font-mono text-xs text-gray-400">{order._id.substring(0, 10)}...</td>
+                          <td className="py-4 px-4"><Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge></td>
+                          <td className="py-4 px-4 font-medium text-gray-200">{getRiderName(order.riderId)}</td>
+                          <td className="py-4 px-4">{getStatusBadge(order.status)}</td>
+                          <td className="py-4 px-4 text-gray-400 text-xs font-medium">{new Date(order.createdAt).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {totalPages > 1 && (
+                  <div className="flex justify-between items-center mt-4 px-4">
+                    <Button 
+                      disabled={currentPage === 1} 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-gray-400">Page {currentPage} of {totalPages}</span>
+                    <Button 
+                      disabled={currentPage === totalPages} 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </Card>
 
@@ -242,7 +302,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Rider Sidebar */}
-        <div>
+        <div className="space-y-6">
           <Card title="Riders" subtitle={`${riders.length} riders`}>
             {riders.length === 0 ? (
               <p className="text-gray-400 text-center py-6">No riders found.</p>
@@ -264,6 +324,50 @@ export const AdminDashboard: React.FC = () => {
                 ))}
               </div>
             )}
+          </Card>
+
+          <Card title="Performance" className="relative">
+            {riders.length > 0 && (
+              <div className="absolute top-5 right-6 z-10">
+                <select 
+                  className="bg-gray-700 text-sm text-white rounded-md px-3 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                  value={selectedPieRiderId}
+                  onChange={(e) => setSelectedPieRiderId(e.target.value)}
+                >
+                  {riders.map(r => (
+                    <option key={r._id} value={r._id}>{r.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="h-64 mt-4">
+              {pieChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={75}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1F2937', color: '#FFF'}} itemStyle={{color: '#E5E7EB'}} />
+                    <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '12px', color: '#9CA3AF'}} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500 text-sm">
+                  No orders found for this rider.
+                </div>
+              )}
+            </div>
           </Card>
         </div>
       </div>

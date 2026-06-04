@@ -17,6 +17,7 @@ export const ClientOrders: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [retryCountdown, setRetryCountdown] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Form state
   const [pickup, setPickup] = useState('');
@@ -37,6 +38,12 @@ export const ClientOrders: React.FC = () => {
     if (!user) return;
     dispatch(fetchMyOrders(user.id));
   };
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const paginatedOrders = useMemo(() => {
+    return orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [orders, currentPage]);
 
   useEffect(() => { 
     fetchOrders(); 
@@ -206,7 +213,7 @@ export const ClientOrders: React.FC = () => {
           <p className="text-gray-300 text-center py-10">You haven't placed any orders yet.</p>
         ) : (
           <div className="space-y-3">
-            {orders.map(order => (
+            {paginatedOrders.map(order => (
               <div
                 key={order._id}
                 onClick={() => setSelectedOrder(order)}
@@ -234,6 +241,27 @@ export const ClientOrders: React.FC = () => {
                 </div>
               </div>
             ))}
+            {totalPages > 1 && (
+              <div className="flex justify-between items-center mt-4 pt-2">
+                <Button 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Previous
+                </Button>
+                <span className="text-sm text-gray-400">Page {currentPage} of {totalPages}</span>
+                <Button 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </Card>

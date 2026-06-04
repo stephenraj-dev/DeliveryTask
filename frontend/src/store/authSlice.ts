@@ -26,9 +26,14 @@ const initialState: AuthState = {
 
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async (payload: { email: string; password: string }, { rejectWithValue }) => {
+  async (payload: { email: string; password: string; role?: string }, { rejectWithValue }) => {
     try {
-      const { data } = await authService.login(payload);
+      const { data } = await authService.login({ email: payload.email, password: payload.password });
+      
+      if (payload.role && data.user.role !== payload.role) {
+        return rejectWithValue(`Role mismatch: Please login as ${data.user.role.charAt(0).toUpperCase() + data.user.role.slice(1)}`);
+      }
+      
       sessionStorage.setItem('token', data.token);
       sessionStorage.setItem('user', JSON.stringify(data.user));
       return data;

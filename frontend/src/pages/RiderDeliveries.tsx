@@ -23,12 +23,19 @@ export const RiderDeliveries: React.FC = () => {
   const [failReason, setFailReason] = useState('');
   const [failOrderId, setFailOrderId] = useState<string | null>(null);
   const [stats, setStats] = useState<RiderStatsData | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filter orders assigned to this rider
   const orders = allOrders.filter((o: OrderData) => {
     const riderId = typeof o.riderId === 'object' && o.riderId ? o.riderId._id : o.riderId;
     return riderId === user?.id;
   });
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const paginatedOrders = React.useMemo(() => {
+    return orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [orders, currentPage]);
 
   const fetchOrders = async () => {
     dispatch(fetchAssignedOrders());
@@ -186,7 +193,7 @@ export const RiderDeliveries: React.FC = () => {
           <p className="text-gray-400 text-center py-10">No deliveries assigned to you yet.</p>
         ) : (
           <div className="space-y-4">
-            {orders.map(order => (
+            {paginatedOrders.map(order => (
               <div key={order._id} className={`p-6 rounded-xl border transition-all duration-300 hover:shadow-md ${
                   order.priority === 'urgent'
                     ? 'bg-red-900/20 border-red-800/50'
@@ -226,6 +233,27 @@ export const RiderDeliveries: React.FC = () => {
                 </div>
               </div>
             ))}
+            {totalPages > 1 && (
+              <div className="flex justify-between items-center mt-4 pt-2">
+                <Button 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Previous
+                </Button>
+                <span className="text-sm text-gray-400">Page {currentPage} of {totalPages}</span>
+                <Button 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </Card>
