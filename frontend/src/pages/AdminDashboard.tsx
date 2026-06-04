@@ -58,9 +58,9 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const getRowClasses = (order: OrderData) => {
-    if (order.status === 'failed') return 'border-l-4 border-red-500 line-through text-gray-400';
+    if (order.status === 'failed') return 'border-l-4 border-red-500 line-through text-gray-500 bg-gray-800/30';
     if (order.status === 'delivered') return 'border-l-4 border-emerald-500';
-    if (order.priority === 'urgent') return 'border-l-4 border-red-400 bg-red-50/30';
+    if (order.priority === 'urgent') return 'border-l-4 border-red-500 bg-red-900/20';
     return 'border-l-4 border-transparent';
   };
 
@@ -146,21 +146,25 @@ export const AdminDashboard: React.FC = () => {
     <Layout>
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Orders</p>
-          <p className="text-4xl font-extrabold text-gray-900 mt-2">{analytics?.totalOrders ?? orders.length}</p>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Total Orders</p>
+          <p className="text-4xl font-extrabold text-white mt-2 relative z-10">{analytics?.totalOrders ?? orders.length}</p>
         </div>
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Delivered</p>
-          <p className="text-4xl font-extrabold text-emerald-600 mt-2">{analytics?.delivered ?? orders.filter(o => o.status === 'delivered').length}</p>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Delivered</p>
+          <p className="text-4xl font-extrabold text-emerald-400 mt-2 relative z-10">{analytics?.delivered ?? orders.filter(o => o.status === 'delivered').length}</p>
         </div>
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Success Rate</p>
-          <p className="text-4xl font-extrabold text-[#1936A1] mt-2">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : `${Math.round((orders.filter(o => o.status === 'delivered').length / (orders.length || 1)) * 100)}%`}</p>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Success Rate</p>
+          <p className="text-4xl font-extrabold text-blue-400 mt-2 relative z-10">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : `${Math.round((orders.filter(o => o.status === 'delivered').length / (orders.length || 1)) * 100)}%`}</p>
         </div>
-        <div className="bg-white rounded-xl card-shadow border border-gray-100 p-6 flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Pending</p>
-          <p className="text-4xl font-extrabold text-amber-500 mt-2">{analytics?.pending ?? orders.filter(o => o.status === 'pending').length}</p>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Pending</p>
+          <p className="text-4xl font-extrabold text-amber-400 mt-2 relative z-10">{analytics?.pending ?? orders.filter(o => o.status === 'pending').length}</p>
         </div>
       </div>
 
@@ -173,7 +177,7 @@ export const AdminDashboard: React.FC = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead><tr className="text-left text-gray-500 border-b border-gray-100 bg-gray-50/50">
+                  <thead><tr className="text-left text-gray-400 border-b border-gray-700 bg-gray-800/50">
                     <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Order ID</th>
                     <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Priority</th>
                     <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Rider</th>
@@ -182,12 +186,12 @@ export const AdminDashboard: React.FC = () => {
                   </tr></thead>
                   <tbody>
                     {sortedOrders.map(order => (
-                      <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
-                        <td className="py-4 px-4 font-mono text-xs text-gray-600">{order._id.substring(0, 10)}...</td>
+                      <tr key={order._id} onClick={() => setSelectedOrder(order)} className={`border-b border-gray-700 hover:bg-gray-700/50 cursor-pointer transition-colors ${getRowClasses(order)}`}>
+                        <td className="py-4 px-4 font-mono text-xs text-gray-400">{order._id.substring(0, 10)}...</td>
                         <td className="py-4 px-4"><Badge variant={order.priority === 'urgent' ? 'danger' : 'default'}>{order.priority}</Badge></td>
-                        <td className="py-4 px-4 font-medium text-gray-700">{getRiderName(order.riderId)}</td>
+                        <td className="py-4 px-4 font-medium text-gray-200">{getRiderName(order.riderId)}</td>
                         <td className="py-4 px-4">{getStatusBadge(order.status)}</td>
-                        <td className="py-4 px-4 text-gray-500 text-xs font-medium">{new Date(order.createdAt).toLocaleString()}</td>
+                        <td className="py-4 px-4 text-gray-400 text-xs font-medium">{new Date(order.createdAt).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -202,11 +206,11 @@ export const AdminDashboard: React.FC = () => {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dynamicZoneData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                    <XAxis dataKey="zone" axisLine={false} tickLine={false} tick={{fill: '#6B7280', fontSize: 12}} />
-                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#6B7280', fontSize: 12}} />
-                    <Tooltip cursor={{fill: '#F3F4F6'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
-                    <Bar dataKey="totalOrders" fill="#1936A1" radius={[4,4,0,0]} barSize={40} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" />
+                    <XAxis dataKey="zone" axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#9CA3AF', fontSize: 12}} />
+                    <Tooltip cursor={{fill: '#374151'}} contentStyle={{borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1F2937', color: '#FFF', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.5)'}} />
+                    <Bar dataKey="totalOrders" fill="#3B82F6" radius={[4,4,0,0]} barSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -216,7 +220,7 @@ export const AdminDashboard: React.FC = () => {
           {analytics && analytics.riderPerformance && analytics.riderPerformance.length > 0 && (
             <Card title="Rider Performance" className="mt-6">
               <table className="w-full text-sm">
-                <thead><tr className="text-left text-gray-500 border-b">
+                <thead><tr className="text-left text-gray-400 border-b border-gray-700">
                   <th className="pb-3 font-medium">Name</th>
                   <th className="pb-3 font-medium">Delivered</th>
                   <th className="pb-3 font-medium">Failed</th>
@@ -224,11 +228,11 @@ export const AdminDashboard: React.FC = () => {
                 </tr></thead>
                 <tbody>
                   {analytics.riderPerformance.map((r, i) => (
-                    <tr key={i} className="border-b">
-                      <td className="py-3 font-medium">{r.riderName}</td>
-                      <td className="py-3 text-emerald-600">{r.delivered}</td>
-                      <td className="py-3 text-red-600">{r.failed}</td>
-                      <td className="py-3">{r.avgTime} min</td>
+                    <tr key={i} className="border-b border-gray-700/50">
+                      <td className="py-3 font-medium text-gray-200">{r.riderName}</td>
+                      <td className="py-3 text-emerald-400">{r.delivered}</td>
+                      <td className="py-3 text-red-400">{r.failed}</td>
+                      <td className="py-3 text-gray-400">{r.avgTime} min</td>
                     </tr>
                   ))}
                 </tbody>
@@ -245,11 +249,11 @@ export const AdminDashboard: React.FC = () => {
             ) : (
               <div className="space-y-3">
                 {riders.map(rider => (
-                  <div key={rider._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={rider._id} className="flex items-center justify-between p-3 bg-gray-800/50 border border-gray-700 rounded-lg">
                     <div className="flex items-center gap-3">
                       {getRiderDot(rider.status)}
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{rider.name}</p>
+                        <p className="text-sm font-medium text-gray-200">{rider.name}</p>
                         <p className="text-xs text-gray-500">{rider.activeOrders} active</p>
                       </div>
                     </div>
@@ -276,10 +280,10 @@ export const AdminDashboard: React.FC = () => {
             </div>
             {/* Assigned Rider */}
             {getRiderName(selectedOrder.riderId) !== 'Unassigned' && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-indigo-50 rounded-lg border border-indigo-100">
-                <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                <span className="text-sm text-gray-500">Rider:</span>
-                <span className="text-sm font-semibold text-indigo-700">{getRiderName(selectedOrder.riderId)}</span>
+              <div className="flex items-center gap-2 px-3 py-2 bg-indigo-900/30 rounded-lg border border-indigo-800">
+                <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <span className="text-sm text-gray-400">Rider:</span>
+                <span className="text-sm font-semibold text-indigo-300">{getRiderName(selectedOrder.riderId)}</span>
               </div>
             )}
 
@@ -297,19 +301,19 @@ export const AdminDashboard: React.FC = () => {
                     <div key={step} className="flex gap-3 pb-4 last:pb-0">
                       {/* Vertical line + dot */}
                       <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white ${
+                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-gray-800 ${
                           done
-                            ? step === 'failed' ? 'bg-red-500' : 'bg-indigo-600'
-                            : 'bg-gray-300'
+                            ? step === 'failed' ? 'bg-red-500' : 'bg-indigo-500'
+                            : 'bg-gray-700'
                         }`} />
                         {!isLast && (
-                          <div className={`w-0.5 flex-1 mt-1 ${done ? 'bg-indigo-300' : 'bg-gray-200'}`} />
+                          <div className={`w-0.5 flex-1 mt-1 ${done ? 'bg-indigo-500' : 'bg-gray-700'}`} />
                         )}
                       </div>
                       {/* Content */}
                       <div className="flex-1 -mt-0.5">
                         <span className={`text-sm capitalize ${
-                          done ? 'text-gray-900 font-medium' : 'text-gray-400'
+                          done ? 'text-white font-medium' : 'text-gray-500'
                         }`}>
                           {step.replace('_', ' ')}
                         </span>
@@ -342,7 +346,7 @@ export const AdminDashboard: React.FC = () => {
         title="Confirm Offline"
         footer={<><Button variant="secondary" onClick={() => setConfirmRider(null)}>Cancel</Button><Button variant="danger" onClick={confirmOffline}>Confirm</Button></>}
       >
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-400">
           Rider <strong>{confirmRider?.name}</strong> has {confirmRider?.activeOrders} active orders.
           Going offline will auto-reassign all orders. Are you sure?
         </p>

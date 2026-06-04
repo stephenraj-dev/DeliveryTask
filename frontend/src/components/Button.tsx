@@ -23,11 +23,11 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const base = 'inline-flex items-center justify-center font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   const variants: Record<string, string> = {
-    primary: 'bg-[#1936A1] text-white hover:bg-[#132A80] focus:ring-[#1936A1]',
-    secondary: 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-200',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600',
+    secondary: 'bg-gray-800 text-gray-200 border border-gray-700 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-600',
     success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600',
-    ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-200',
+    ghost: 'bg-transparent text-gray-400 hover:bg-gray-800 hover:text-white focus:ring-gray-700',
   };
   const sizes: Record<string, string> = {
     sm: 'px-3 py-1.5 text-xs',

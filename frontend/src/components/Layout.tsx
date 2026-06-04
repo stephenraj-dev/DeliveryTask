@@ -19,12 +19,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-500 via-slate-400 to-slate-500 selection:bg-[#1936A1] selection:text-white">
+    <div className="min-h-screen bg-gray-900 selection:bg-blue-600 selection:text-white">
 
-      <nav className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
+      <nav className="sticky top-0 z-40 w-full bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-3 flex items-center justify-between shadow-sm">
 
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#1936A1] rounded-xl flex items-center justify-center shadow-md">
+          <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/20">
             <svg
               className="w-5 h-5 text-white"
               fill="none"
@@ -40,25 +40,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             </svg>
           </div>
 
-          <span className="text-xl font-bold text-[#1936A1] tracking-tight">
+          <span className="text-xl font-bold text-white tracking-tight">
             Euro Delivery Pro
           </span>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-3 mr-2">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-gray-300">
               {user?.name}
             </span>
 
-            <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg uppercase tracking-wider border border-slate-200">
+            <span className="px-3 py-1 bg-gray-800 text-gray-300 text-xs font-semibold rounded-lg uppercase tracking-wider border border-gray-700">
               {user?.role}
             </span>
           </div>
 
           <button
             onClick={handleLogout}
-            className="text-sm font-medium text-slate-500 hover:text-red-600 transition-colors duration-200"
+            className="text-sm font-medium text-gray-400 hover:text-red-500 transition-colors duration-200"
           >
             Logout
           </button>
