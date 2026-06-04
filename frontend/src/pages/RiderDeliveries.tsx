@@ -42,13 +42,13 @@ export const RiderDeliveries: React.FC = () => {
 
   useEffect(() => { 
     fetchOrders(); 
-    socket.on('order_assigned', (data) => {
+    socket.on('order_assigned', (_data) => {
       // Refresh list to show the newly assigned order
       fetchOrders();
       showToast('New order assigned to you!', 'info');
     });
     
-    socket.on('order_status_changed', (data) => {
+    socket.on('order_status_changed', (_data) => {
       fetchOrders();
     });
     
