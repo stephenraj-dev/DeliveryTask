@@ -1,0 +1,39 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.14.1
+2 info using node@v22.21.0
+3 silly config load:file:C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config load:file:D:\DeliveryTask\backend\.npm-global\.npmrc
+5 silly config load:file:C:\Users\Yoho_Lap_4\.npmrc
+6 silly config load:file:D:\DeliveryTask\backend\.npm-global\etc\npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" ".npm-cache" "--prefix" ".npm-global"
+9 verbose logfile logs-max:10 dir:D:\DeliveryTask\backend\.npm-cache\_logs\2026-06-04T09_24_25_477Z-
+10 verbose logfile D:\DeliveryTask\backend\.npm-cache\_logs\2026-06-04T09_24_25_477Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912
+13 silly idealTree buildDeps
+14 silly reify moves {}
+15 verbose stack Error: Could not read package.json: Error: ENOENT: no such file or directory, open 'D:\DeliveryTask\backend\.npm-global\package.json'
+15 verbose stack     at async open (node:internal/fs/promises:641:25)
+15 verbose stack     at async readFile (node:internal/fs/promises:1245:14)
+15 verbose stack     at async read (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\package-json\lib\read-package.js:9:18)
+15 verbose stack     at async PackageJson.load (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\package-json\lib\index.js:131:31)
+15 verbose stack     at async PackageJson.normalize (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\package-json\lib\index.js:117:5)
+15 verbose stack     at async runScript (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\run-script\lib\run-script.js:11:28)
+15 verbose stack     at async Install.exec (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\lib\commands\install.js:162:9)
+15 verbose stack     at async Npm.exec (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\lib\npm.js:193:9)
+15 verbose stack     at async module.exports (C:\Users\Yoho_Lap_4\AppData\Roaming\npm\node_modules\npm\lib\cli\entry.js:67:5)
+16 error code ENOENT
+17 error syscall open
+18 error path D:\DeliveryTask\backend\.npm-global\package.json
+19 error errno -4058
+20 error enoent Could not read package.json: Error: ENOENT: no such file or directory, open 'D:\DeliveryTask\backend\.npm-global\package.json'
+21 error enoent This is related to npm not being able to find a file.
+21 error enoent
+22 verbose cwd D:\DeliveryTask\backend
+23 verbose os Windows_NT 10.0.19045
+24 verbose node v22.21.0
+25 verbose npm  v11.14.1
+26 verbose exit -4058
+27 verbose code -4058
+28 error A complete log of this run can be found in: D:\DeliveryTask\backend\.npm-cache\_logs\2026-06-04T09_24_25_477Z-debug-0.log
