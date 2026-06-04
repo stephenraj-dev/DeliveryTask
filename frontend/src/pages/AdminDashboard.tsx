@@ -139,7 +139,7 @@ export const AdminDashboard: React.FC = () => {
     return Object.entries(zoneMap).map(([zone, totalOrders]) => ({ zone, totalOrders }));
   }, [orders]);
 
-  if (ordersLoading) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
+  if (ordersLoading && orders.length === 0) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
   if (ordersError) return <Layout><div className="text-center py-20"><p className="text-red-500 text-lg">{ordersError}</p><Button onClick={fetchData} className="mt-4">Retry</Button></div></Layout>;
 
   return (

@@ -225,7 +225,7 @@ export const ClientOrders: React.FC = () => {
 
       {/* Orders List */}
       <Card title="Order History">
-        {loading ? (
+        {loading && orders.length === 0 ? (
           <div className="flex justify-center py-10"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" /></div>
         ) : error ? (
           <div className="text-center py-10"><p className="text-red-500">{error}</p><Button onClick={fetchOrders} variant="secondary" className="mt-3">Retry</Button></div>
