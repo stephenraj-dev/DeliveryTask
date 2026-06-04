@@ -48,8 +48,15 @@ export const RiderDeliveries: React.FC = () => {
       showToast('New order assigned to you!', 'info');
     });
     
+    socket.on('order_status_changed', (data) => {
+      fetchOrders();
+    });
+    
     // Also listen for reassignments/offline sync if needed
-    return () => { socket.off('order_assigned'); };
+    return () => { 
+      socket.off('order_assigned'); 
+      socket.off('order_status_changed');
+    };
   }, [dispatch]);
 
   const activeCount = orders.filter(o => o.status !== 'delivered' && o.status !== 'failed').length;

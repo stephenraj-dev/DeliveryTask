@@ -35,10 +35,12 @@ export const AdminDashboard: React.FC = () => {
     // Live updates via socket
     socket.on('order_assigned', () => fetchData());
     socket.on('order_status_changed', () => fetchData());
+    socket.on('rider_offline', () => fetchData());
     
     return () => {
       socket.off('order_assigned');
       socket.off('order_status_changed');
+      socket.off('rider_offline');
     };
   }, [dispatch]);
 
@@ -90,6 +92,23 @@ export const AdminDashboard: React.FC = () => {
     if (!riderId) return 'Unassigned';
     if (typeof riderId === 'object' && riderId.name) return riderId.name;
     return String(riderId).substring(0, 8) + '...';
+  };
+
+  const getStepTimestamp = (order: OrderData, step: string): string | null => {
+    const map: Record<string, string | undefined> = {
+      pending: order.createdAt,
+      assigned: order.assignedAt,
+      picked_up: order.pickedUpAt,
+      delivered: order.deliveredAt,
+      failed: order.deliveredAt,
+    };
+    return map[step] || null;
+  };
+
+  const formatDateTime = (dateStr: string): string => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+      ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
   if (ordersLoading) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600" /></div></Layout>;
@@ -227,17 +246,58 @@ export const AdminDashboard: React.FC = () => {
               <div><span className="text-gray-500">Package:</span> <span className="font-medium">{selectedOrder.packageDetails}</span></div>
               <div><span className="text-gray-500">Priority:</span> <Badge variant={selectedOrder.priority === 'urgent' ? 'danger' : 'default'}>{selectedOrder.priority}</Badge></div>
             </div>
+            {/* Assigned Rider */}
+            {getRiderName(selectedOrder.riderId) !== 'Unassigned' && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-indigo-50 rounded-lg border border-indigo-100">
+                <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <span className="text-sm text-gray-500">Rider:</span>
+                <span className="text-sm font-semibold text-indigo-700">{getRiderName(selectedOrder.riderId)}</span>
+              </div>
+            )}
+
+            {/* Timeline */}
             <div className="border-t pt-4">
               <h4 className="text-sm font-semibold mb-3">Timeline</h4>
-              <div className="space-y-3">
-                {['pending', 'assigned', 'picked_up', selectedOrder.status === 'failed' ? 'failed' : 'delivered'].map((step, i) => {
+              <div className="relative ml-1.5">
+                {['pending', 'assigned', 'picked_up', selectedOrder.status === 'failed' ? 'failed' : 'delivered'].map((step, i, arr) => {
                   const steps = ['pending', 'assigned', 'picked_up', selectedOrder.status === 'failed' ? 'failed' : 'delivered'];
                   const currentIdx = steps.indexOf(selectedOrder.status);
                   const done = i <= currentIdx;
+                  const isLast = i === arr.length - 1;
+                  const timestamp = done ? getStepTimestamp(selectedOrder, step) : null;
                   return (
-                    <div key={step} className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${done ? 'bg-indigo-600' : 'bg-gray-300'}`} />
-                      <span className={`text-sm capitalize ${done ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>{step.replace('_', ' ')}</span>
+                    <div key={step} className="flex gap-3 pb-4 last:pb-0">
+                      {/* Vertical line + dot */}
+                      <div className="flex flex-col items-center">
+                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white ${
+                          done
+                            ? step === 'failed' ? 'bg-red-500' : 'bg-indigo-600'
+                            : 'bg-gray-300'
+                        }`} />
+                        {!isLast && (
+                          <div className={`w-0.5 flex-1 mt-1 ${done ? 'bg-indigo-300' : 'bg-gray-200'}`} />
+                        )}
+                      </div>
+                      {/* Content */}
+                      <div className="flex-1 -mt-0.5">
+                        <span className={`text-sm capitalize ${
+                          done ? 'text-gray-900 font-medium' : 'text-gray-400'
+                        }`}>
+                          {step.replace('_', ' ')}
+                        </span>
+                        {timestamp && (
+                          <p className="text-xs text-gray-400 mt-0.5">{formatDateTime(timestamp)}</p>
+                        )}
+                        {done && step === 'assigned' && getRiderName(selectedOrder.riderId) !== 'Unassigned' && (
+                          <p className="text-xs text-indigo-500 mt-0.5">Assigned to {getRiderName(selectedOrder.riderId)}</p>
+                        )}
+                        {done && step === 'assigned' && selectedOrder.handoverNote && (
+                          <p className="text-xs text-amber-500 mt-0.5">{selectedOrder.handoverNote}</p>
+                        )}
+                        {done && step === 'failed' && selectedOrder.failureReason && (
+                          <p className="text-xs text-red-500 mt-0.5">Reason: {selectedOrder.failureReason}</p>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

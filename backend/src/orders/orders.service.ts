@@ -133,17 +133,12 @@ export class OrdersService {
     if (nextStatus === 'failed') {
       if (data.failureReason) order.failureReason = data.failureReason;
       await this.userModel.findByIdAndUpdate(riderId, { $inc: { activeOrders: -1, totalFailed: 1 } });
-      this.notificationsService.notifyAdmin(`Order ${id} failed — auto reassigned`);
+      this.notificationsService.notifyAdmin(`Order ${id} failed`);
       await this.redisClient.del('analytics:summary');
     }
 
     await order.save();
     this.appGateway.emitOrderStatusChanged(order._id.toString(), nextStatus);
-
-    if (nextStatus === 'failed') {
-      // Auto reassign
-      await this.reassignSingleOrder(order);
-    }
 
     return order;
   }
