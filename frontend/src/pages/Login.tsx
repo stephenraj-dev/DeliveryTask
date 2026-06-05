@@ -36,6 +36,14 @@ export const Login: React.FC = () => {
       {/* Background decorations matching the image (very subtle gradient/noise in background) */}
       <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 15% 15%, #1F2937 0%, transparent 40%), radial-gradient(circle at 85% 85%, #1F2937 0%, transparent 40%)' }}></div>
 
+      {/* Delivery App Background Image */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[6px] pointer-events-none z-0"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1617195737496-bc30194e3a19?auto=format&fit=crop&w=2000&q=80")' }}
+      ></div>
+      {/* Dark overlay to make text readable */}
+      <div className="absolute inset-0 w-full h-full bg-gray-900/60 pointer-events-none z-0"></div>
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
           <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
