@@ -463,7 +463,6 @@ export const AdminDashboard: React.FC = () => {
                       {getRiderDot(rider.status)}
                       <div>
                         <p className="text-sm font-medium text-gray-200">{rider.name}</p>
-                        <p className="text-xs text-gray-500">{rider.activeOrders} active</p>
                       </div>
                     </div>
                     <Button size="sm" variant={rider.status === 'offline' ? 'success' : 'secondary'} onClick={() => handleToggleRider(rider)}>
