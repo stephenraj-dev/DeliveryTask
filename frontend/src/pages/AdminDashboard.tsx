@@ -265,19 +265,19 @@ export const AdminDashboard: React.FC = () => {
           <p className="text-4xl font-extrabold text-white mt-2 relative z-10">{analytics?.totalOrders ?? orders.length}</p>
         </div>
         <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Delivered</p>
-          <p className="text-4xl font-extrabold text-emerald-400 mt-2 relative z-10">{analytics?.delivered ?? orders.filter(o => o.status === 'delivered').length}</p>
-        </div>
-        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Success Rate</p>
-          <p className="text-4xl font-extrabold text-blue-400 mt-2 relative z-10">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : `${Math.round((orders.filter(o => o.status === 'delivered').length / (orders.length || 1)) * 100)}%`}</p>
-        </div>
-        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Pending</p>
           <p className="text-4xl font-extrabold text-amber-400 mt-2 relative z-10">{analytics?.pending ?? orders.filter(o => o.status === 'assigned').length}</p>
+        </div>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Total PickedUp</p>
+          <p className="text-4xl font-extrabold text-rose-400 mt-2 relative z-10">{orders.filter(o => o.status === 'picked_up').length}</p>
+        </div>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Delivered</p>
+          <p className="text-4xl font-extrabold text-emerald-400 mt-2 relative z-10">{analytics?.delivered ?? orders.filter(o => o.status === 'delivered').length}</p>
         </div>
         <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
@@ -288,6 +288,14 @@ export const AdminDashboard: React.FC = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Total Failed</p>
           <p className="text-4xl font-extrabold text-red-400 mt-2 relative z-10">{orders.filter(o => o.status === 'failed').length}</p>
+        </div>
+      </div>
+
+      <div className='mb-8'>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300  relative overflow-hidden group">
+         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Success Rate</p>
+          <p className="text-4xl font-extrabold text-blue-400 mt-2 relative z-10">{analytics?.successRate ? `${Math.round(analytics.successRate)}%` : `${Math.round((orders.filter(o => o.status === 'delivered').length / (orders.length || 1)) * 100)}%`}</p>
         </div>
       </div>
 
