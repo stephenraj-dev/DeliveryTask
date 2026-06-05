@@ -56,7 +56,7 @@ export const fetchAssignedOrders = createAsyncThunk(
 export const createOrder = createAsyncThunk(
   'orders/create',
   async (
-    payload: { pickupAddress: string; dropAddress: string; packageDetails: string; priority: 'normal' | 'urgent' },
+    payload: { pickupAddress: string; dropAddress: string; packageDetails: string; priority: 'normal' | 'urgent'; clientPhone?: string },
     { rejectWithValue }
   ) => {
     try {

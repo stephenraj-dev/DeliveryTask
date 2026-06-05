@@ -20,6 +20,7 @@ let Order = class Order {
     dropAddress;
     packageDetails;
     priority;
+    clientPhone;
     status;
     clientId;
     riderId;
@@ -49,6 +50,10 @@ __decorate([
     (0, mongoose_1.Prop)({ required: true, enum: ['normal', 'urgent'] }),
     __metadata("design:type", String)
 ], Order.prototype, "priority", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Order.prototype, "clientPhone", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true, enum: ['pending', 'assigned', 'picked_up', 'delivered', 'failed'], default: 'pending' }),
     __metadata("design:type", String)

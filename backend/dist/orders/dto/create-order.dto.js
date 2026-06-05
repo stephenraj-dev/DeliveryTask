@@ -16,6 +16,7 @@ class CreateOrderDto {
     dropAddress;
     packageDetails;
     priority;
+    clientPhone;
 }
 exports.CreateOrderDto = CreateOrderDto;
 __decorate([
@@ -37,4 +38,9 @@ __decorate([
     (0, class_validator_1.IsEnum)(['normal', 'urgent']),
     __metadata("design:type", String)
 ], CreateOrderDto.prototype, "priority", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "clientPhone", void 0);
 //# sourceMappingURL=create-order.dto.js.map

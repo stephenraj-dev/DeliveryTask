@@ -3,4 +3,5 @@ export declare class CreateOrderDto {
     dropAddress: string;
     packageDetails: string;
     priority: string;
+    clientPhone?: string;
 }

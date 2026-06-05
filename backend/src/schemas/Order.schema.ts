@@ -17,6 +17,9 @@ export class Order {
   @Prop({ required: true, enum: ['normal', 'urgent'] })
   priority: string;
 
+  @Prop()
+  clientPhone?: string;
+
   @Prop({ required: true, enum: ['pending', 'assigned', 'picked_up', 'delivered', 'failed'], default: 'pending' })
   status: string;
 

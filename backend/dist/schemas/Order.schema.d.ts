@@ -5,6 +5,7 @@ export declare class Order {
     dropAddress: string;
     packageDetails: string;
     priority: string;
+    clientPhone?: string;
     status: string;
     clientId: mongoose.Types.ObjectId;
     riderId?: mongoose.Types.ObjectId;
@@ -54,6 +55,15 @@ export declare const OrderSchema: mongoose.Schema<Order, mongoose.Model<Order, a
         id: string;
     }> | undefined;
     priority?: mongoose.SchemaDefinitionProperty<string, Order, mongoose.Document<unknown, {}, Order, {
+        id: string;
+    }, mongoose.DefaultSchemaOptions> & Omit<Order & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }> | undefined;
+    clientPhone?: mongoose.SchemaDefinitionProperty<string | undefined, Order, mongoose.Document<unknown, {}, Order, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<Order & {
         _id: Types.ObjectId;

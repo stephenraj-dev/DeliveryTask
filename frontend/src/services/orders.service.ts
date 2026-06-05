@@ -7,7 +7,8 @@ export interface OrderData {
   packageDetails: string;
   priority: 'normal' | 'urgent';
   status: 'pending' | 'assigned' | 'picked_up' | 'delivered' | 'failed';
-  clientId: string;
+  clientId: { _id: string; name: string } | string;
+  clientPhone?: string;
   riderId?: { _id: string; name: string; status: string } | string;
   proofPhoto?: string;
   failureReason?: string;
@@ -25,6 +26,7 @@ interface CreateOrderPayload {
   dropAddress: string;
   packageDetails: string;
   priority: 'normal' | 'urgent';
+  clientPhone?: string;
 }
 
 interface UpdateStatusPayload {

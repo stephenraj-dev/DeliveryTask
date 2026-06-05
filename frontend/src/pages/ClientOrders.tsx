@@ -23,6 +23,7 @@ export const ClientOrders: React.FC = () => {
   const [pickup, setPickup] = useState('');
   const [drop, setDrop] = useState('');
   const [pkg, setPkg] = useState('');
+  const [phone, setPhone] = useState('');
   const [priority, setPriority] = useState<'normal' | 'urgent'>('normal');
 
   // Compute stats from real fetched orders
@@ -77,9 +78,9 @@ export const ClientOrders: React.FC = () => {
     if (!user) return;
     setSubmitting(true);
     try {
-      await dispatch(createOrder({ pickupAddress: pickup, dropAddress: drop, packageDetails: pkg, priority })).unwrap();
+      await dispatch(createOrder({ pickupAddress: pickup, dropAddress: drop, packageDetails: pkg, priority, clientPhone: phone })).unwrap();
       showToast('Order placed successfully!', 'success');
-      setPickup(''); setDrop(''); setPkg(''); setPriority('normal');
+      setPickup(''); setDrop(''); setPkg(''); setPhone(''); setPriority('normal');
       fetchOrders();
     } catch (err) {
       if (err === 'NO_RIDERS') {
@@ -188,6 +189,19 @@ export const ClientOrders: React.FC = () => {
             <input className="w-full bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 shadow-sm" value={pkg} onChange={e => setPkg(e.target.value)} placeholder="Describe the package" />
           </div>
           <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Phone Number</label>
+            <input 
+              className="w-full bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 shadow-sm" 
+              value={phone} 
+              onChange={e => {
+                const val = e.target.value.replace(/\D/g, '');
+                if (val.length <= 10) setPhone(val);
+              }} 
+              placeholder="Enter 10 digit phone number" 
+              type="tel" 
+            />
+          </div>
+          <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">Priority</label>
             <select className="w-full bg-gray-900/50 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 shadow-sm appearance-none" value={priority} onChange={e => setPriority(e.target.value as 'normal' | 'urgent')}>
               <option value="normal">Normal</option>
@@ -196,7 +210,7 @@ export const ClientOrders: React.FC = () => {
           </div>
         </div>
         <div className="mt-4 flex items-center gap-4">
-          <Button onClick={handleCreateOrder} loading={submitting} disabled={!pickup || !drop || !pkg || retryCountdown > 0}>
+          <Button onClick={handleCreateOrder} loading={submitting} disabled={!pickup || !drop || !pkg || phone.length !== 10 || retryCountdown > 0}>
             {retryCountdown > 0 ? `Retrying in ${retryCountdown}s...` : 'Place Order'}
           </Button>
           {retryCountdown > 0 && <span className="text-sm text-amber-600 font-medium">No riders available. Auto-retrying...</span>}
@@ -274,6 +288,7 @@ export const ClientOrders: React.FC = () => {
               <div><span className="text-gray-500">Pickup:</span> <span className="font-medium">{selectedOrder.pickupAddress}</span></div>
               <div><span className="text-gray-500">Drop:</span> <span className="font-medium">{selectedOrder.dropAddress}</span></div>
               <div><span className="text-gray-500">Package:</span> <span className="font-medium">{selectedOrder.packageDetails}</span></div>
+              <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedOrder.clientPhone || 'N/A'}</span></div>
               <div><span className="text-gray-500">Priority:</span> <Badge variant={selectedOrder.priority === 'urgent' ? 'danger' : 'default'}>{selectedOrder.priority}</Badge></div>
             </div>
 

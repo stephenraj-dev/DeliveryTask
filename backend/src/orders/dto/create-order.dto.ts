@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -15,4 +15,8 @@ export class CreateOrderDto {
 
   @IsEnum(['normal', 'urgent'])
   priority: string;
+
+  @IsOptional()
+  @IsString()
+  clientPhone?: string;
 }

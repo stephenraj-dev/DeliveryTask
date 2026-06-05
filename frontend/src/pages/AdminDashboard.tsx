@@ -24,6 +24,7 @@ export const AdminDashboard: React.FC = () => {
   const [confirmRider, setConfirmRider] = useState<RiderData | null>(null);
   const [selectedPieRiderId, setSelectedPieRiderId] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [zoneTimeframe, setZoneTimeframe] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
 
   const fetchData = () => {
     dispatch(fetchAllOrders(undefined));
@@ -125,8 +126,21 @@ export const AdminDashboard: React.FC = () => {
 
   const dynamicZoneData = React.useMemo(() => {
     if (!orders || orders.length === 0) return [];
+    
+    const now = new Date();
+    const filteredOrders = orders.filter(order => {
+      if (!order.createdAt) return false;
+      const orderDate = new Date(order.createdAt);
+      const diffTime = Math.abs(now.getTime() - orderDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (zoneTimeframe === 'weekly') return diffDays <= 7;
+      if (zoneTimeframe === 'monthly') return diffDays <= 30;
+      if (zoneTimeframe === 'yearly') return diffDays <= 365;
+      return true;
+    });
+
     const zoneMap: Record<string, number> = {};
-    orders.forEach(order => {
+    filteredOrders.forEach(order => {
       // Basic dynamic zone extraction from pickup address
       let zone = 'Central Area';
       const addr = order.pickupAddress.toLowerCase();
@@ -149,7 +163,7 @@ export const AdminDashboard: React.FC = () => {
       zoneMap[zone] = (zoneMap[zone] || 0) + 1;
     });
     return Object.entries(zoneMap).map(([zone, totalOrders]) => ({ zone, totalOrders }));
-  }, [orders]);
+  }, [orders, zoneTimeframe]);
 
   const pieChartData = React.useMemo(() => {
     if (!selectedPieRiderId) return [];
@@ -357,7 +371,18 @@ export const AdminDashboard: React.FC = () => {
 
           {/* Analytics */}
           {dynamicZoneData.length > 0 && (
-            <Card title="Zone-wise Order Volume (Live)" className="mt-6">
+            <Card title="Zone-wise Order Volume (Live)" className="mt-6 relative">
+              <div className="absolute top-5 right-6 z-10">
+                <select 
+                  className="bg-gray-700 text-sm text-white rounded-md px-3 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                  value={zoneTimeframe}
+                  onChange={(e) => setZoneTimeframe(e.target.value as 'weekly' | 'monthly' | 'yearly')}
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dynamicZoneData}>
@@ -475,6 +500,7 @@ export const AdminDashboard: React.FC = () => {
               <div><span className="text-gray-500">Pickup:</span> <span className="font-medium">{selectedOrder.pickupAddress}</span></div>
               <div><span className="text-gray-500">Drop:</span> <span className="font-medium">{selectedOrder.dropAddress}</span></div>
               <div><span className="text-gray-500">Package:</span> <span className="font-medium">{selectedOrder.packageDetails}</span></div>
+              <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedOrder.clientPhone || 'N/A'}</span></div>
               <div><span className="text-gray-500">Priority:</span> <Badge variant={selectedOrder.priority === 'urgent' ? 'danger' : 'default'}>{selectedOrder.priority}</Badge></div>
             </div>
             {/* Assigned Rider */}
