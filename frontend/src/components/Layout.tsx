@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
 import type { RootState } from '../store';
+import { Modal } from './Modal';
+import { Button } from './Button';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,8 +14,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
-  const handleLogout = () => {
+  const confirmLogout = () => {
     dispatch(logout());
     navigate('/login');
   };
@@ -46,10 +49,24 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         <div className="flex items-center gap-4">
+
+          {user?.role === "rider" && (
+            <div className="hidden lg:block text-right mr-4">
+              <p className="text-lg font-semibold text-white">
+                Welcome back, {user?.name} 🛵
+              </p>
+              <p className="text-xs text-gray-400">
+                Pick up orders, deliver efficiently, and keep your ratings high.
+              </p>
+            </div>
+          )}
+
           <div className="hidden sm:flex items-center gap-3 mr-2">
-            <span className="text-sm font-medium text-gray-300">
+            {user?.role !== "rider" && (
+              <span className="text-sm font-medium text-gray-300">
               {user?.name}
             </span>
+            )}
 
             <span className="px-3 py-1 bg-gray-800 text-gray-300 text-xs font-semibold rounded-lg uppercase tracking-wider border border-gray-700">
               {user?.role}
@@ -57,11 +74,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
 
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="text-sm font-medium text-gray-400 hover:text-red-500 transition-colors duration-200"
           >
             Logout
           </button>
+
         </div>
 
       </nav>
@@ -69,6 +87,20 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-[fadeIn_0.3s_ease-out]">
         {children}
       </main>
+
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Confirm Logout"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowLogoutModal(false)}>Cancel</Button>
+            <Button variant="danger" onClick={confirmLogout}>Logout</Button>
+          </>
+        }
+      >
+        <p className="text-gray-300">Are you sure you want to log out?</p>
+      </Modal>
 
     </div>
   );

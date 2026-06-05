@@ -19,6 +19,7 @@ export const AdminDashboard: React.FC = () => {
   const { items: orders, loading: ordersLoading, error: ordersError } = useAppSelector(state => state.orders);
   const { items: riders } = useAppSelector(state => state.riders);
   const { summary: analytics } = useAppSelector(state => state.analytics);
+  const { user } = useAppSelector(state => state.auth);
 
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [confirmRider, setConfirmRider] = useState<RiderData | null>(null);
@@ -236,6 +237,26 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <Layout>
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-800/50 rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">
+              Welcome back, {user?.name}! 👋
+            </h1>
+            <p className="text-blue-200/80 text-sm md:text-base max-w-xl leading-relaxed">
+              Here's what's happening with your delivery operations today. Manage orders, track riders, and analyze performance all in one place.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 bg-gray-900/60 px-4 py-2.5 rounded-xl border border-gray-700/50 backdrop-blur-md self-start md:self-center shadow-inner">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
+            <span className="text-sm font-semibold tracking-wide text-emerald-400">System Online</span>
+          </div>
+        </div>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
         <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
