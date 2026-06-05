@@ -160,7 +160,7 @@ export const RiderDeliveries: React.FC = () => {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
           <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-5 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest relative z-10">Total Orders</p>
@@ -180,6 +180,11 @@ export const RiderDeliveries: React.FC = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest relative z-10">Performance</p>
             <p className="text-3xl font-extrabold text-blue-400 mt-1 relative z-10">{stats.performance}%</p>
+          </div>
+          <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-5 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest relative z-10">Picked Up</p>
+            <p className="text-3xl font-extrabold text-amber-400 mt-1 relative z-10">{orders.filter(o => o.status === 'picked_up').length}</p>
           </div>
         </div>
       )}

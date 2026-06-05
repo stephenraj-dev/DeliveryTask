@@ -19,8 +19,6 @@ export const AdminDashboard: React.FC = () => {
   const { items: orders, loading: ordersLoading, error: ordersError } = useAppSelector(state => state.orders);
   const { items: riders } = useAppSelector(state => state.riders);
   const { summary: analytics } = useAppSelector(state => state.analytics);
-  console.log("admin :", analytics);
-  console.log("admin order :", orders);
 
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [confirmRider, setConfirmRider] = useState<RiderData | null>(null);
@@ -72,7 +70,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const getRowClasses = (order: OrderData) => {
-    if (order.status === 'failed') return 'border-l-4 border-red-500 line-through text-gray-500 bg-gray-800/30';
+    if (order.status === 'failed') return 'border-l-4 border-red-500 line-through text-red-800 decoration-2 bg-gray-800/30';
     if (order.status === 'delivered') return 'border-l-4 border-emerald-500';
     if (order.priority === 'urgent') return 'border-l-4 border-red-500 bg-red-900/20';
     return 'border-l-4 border-transparent';
@@ -184,17 +182,40 @@ export const AdminDashboard: React.FC = () => {
       });
 
       const assigned = riderOrders.length;
-      const delivered = riderOrders.filter(o => o.status === 'delivered').length;
+      const deliveredOrdersList = riderOrders.filter(o => o.status === 'delivered');
+      const delivered = deliveredOrdersList.length;
       const percentage = assigned > 0 ? Math.round((delivered / assigned) * 100) : 0;
+
+      let totalTime = 0;
+      let validCount = 0;
+      deliveredOrdersList.forEach(o => {
+        if (o.createdAt && o.deliveredAt) {
+          const start = new Date(o.createdAt).getTime();
+          const end = new Date(o.deliveredAt).getTime();
+          if (end > start) {
+            totalTime += (end - start);
+            validCount++;
+          }
+        }
+      });
+      const avgDeliveryTimeMins = validCount > 0 ? Math.round((totalTime / validCount) / 60000) : 0;
 
       return {
         ...rider,
         assignedOrders: assigned,
         deliveredOrders: delivered,
-        performancePercent: percentage
+        performancePercent: percentage,
+        avgDeliveryTimeMins
       };
     });
   }, [riders, orders]);
+
+  const overallAvgDeliveryTime = React.useMemo(() => {
+    const activeRiders = riderPerformanceList.filter(r => r.deliveredOrders > 0 && r.avgDeliveryTimeMins > 0);
+    if (activeRiders.length === 0) return 0;
+    const sum = activeRiders.reduce((acc, curr) => acc + curr.avgDeliveryTimeMins, 0);
+    return Math.round(sum / activeRiders.length);
+  }, [riderPerformanceList]);
 
   if (ordersLoading && orders.length === 0) return <Layout><div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1936A1]" /></div></Layout>;
   if (ordersError) return <Layout><div className="text-center py-20"><p className="text-red-500 text-lg">{ordersError}</p><Button onClick={fetchData} className="mt-4">Retry</Button></div></Layout>;
@@ -202,7 +223,7 @@ export const AdminDashboard: React.FC = () => {
   return (
     <Layout>
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
         <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Total Orders</p>
@@ -223,6 +244,16 @@ export const AdminDashboard: React.FC = () => {
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Pending</p>
           <p className="text-4xl font-extrabold text-amber-400 mt-2 relative z-10">{analytics?.pending ?? orders.filter(o => o.status === 'assigned').length}</p>
         </div>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Avg Delivery Time</p>
+          <p className="text-4xl font-extrabold text-purple-400 mt-2 relative z-10">{overallAvgDeliveryTime} <span className="text-lg font-medium text-gray-400">min</span></p>
+        </div>
+        <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:-translate-y-1 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all duration-500 -mr-10 -mt-10"></div>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider relative z-10">Total Failed</p>
+          <p className="text-4xl font-extrabold text-red-400 mt-2 relative z-10">{orders.filter(o => o.status === 'failed').length}</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -235,6 +266,7 @@ export const AdminDashboard: React.FC = () => {
                   <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">ID</th>
                   <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Name</th>
                   <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Email</th>
+                  <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Avg Delivery Time</th>
                   <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
                   <th className="py-4 px-4 font-bold uppercase tracking-wider text-[11px]">Performance</th>
                 </tr></thead>
@@ -244,6 +276,7 @@ export const AdminDashboard: React.FC = () => {
                       <td className="py-4 px-4 font-mono text-xs text-gray-400">{rider._id.substring(0, 8)}...</td>
                       <td className="py-4 px-4 font-medium text-gray-200">{rider.name}</td>
                       <td className="py-4 px-4 text-gray-400 text-xs">{rider.email}</td>
+                      <td className="py-4 px-4 text-gray-200 text-xs font-medium">{rider.avgDeliveryTimeMins > 0 ? `${rider.avgDeliveryTimeMins} min` : 'N/A'}</td>
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
                           <span className={`w-2.5 h-2.5 rounded-full ${rider.status === 'available' ? 'bg-emerald-500' : rider.status === 'busy' ? 'bg-amber-500' : 'bg-red-500'}`}></span>
